@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-db
+  template:
+    metadata:
+      labels:
+        app: cms-db
+    spec:
+      containers:
+        - name: cms-db
+          image: {{ .Values.cmsDb.image }}
+          envFrom:
+            - configMapRef:
+                name: cms-config
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          resources:
+            limits:
+              memory: {{ .Values.cmsDb.memLimit }}
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-mysql
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-web
+  template:
+    metadata:
+      labels:
+        app: cms-web
+    spec:
+      containers:
+        - name: cms-web
+          image: {{ .Values.cmsWeb.image }}
+          ports:
+            - containerPort: {{ .Values.cmsWeb.port }}
+          volumeMounts:
+            - name: cms-data
+              mountPath: /var/www/cms
+          envFrom:
+            - configMapRef:
+                name: cms-config
+          resources:
+            limits:
+              memory: {{ .Values.cmsWeb.memLimit }}
+      volumes:
+        - name: cms-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-cms

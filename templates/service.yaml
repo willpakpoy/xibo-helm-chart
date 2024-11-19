@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cms-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.cmsWeb.port }}
+      targetPort: {{ .Values.cmsWeb.port }}
+  selector:
+    app: cms-web
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cms-xmr
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.cmsXmr.port }}
+      targetPort: {{ .Values.cmsXmr.port }}
+  selector:
+    app: cms-xmr
