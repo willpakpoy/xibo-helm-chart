@@ -13,21 +13,25 @@ spec:
         app: cms-db
     spec:
       containers:
-        - name: cms-db
+        - name: mysql
           image: {{ .Values.cmsDb.image }}
-          envFrom:
-            - configMapRef:
-                name: cms-config
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql
+          env:
+            {{- with .Values.cmsDb.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+            {{- end }}
           resources:
             limits:
               memory: {{ .Values.cmsDb.memLimit }}
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-mysql
+            claimName: cms-db-pvc
 
 ---
 apiVersion: apps/v1

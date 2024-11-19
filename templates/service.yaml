@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: cms-web
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: {{ .Values.cmsWeb.port }}
       targetPort: {{ .Values.cmsWeb.port }}

@@ -17,6 +17,8 @@ cmsDb:
   image: mysql:8.0
   memLimit: "1Gi"
   storage: "10Gi"
+  env:
+    MYSQL_RANDOM_ROOT_PASSWORD: "yes"
 
 cmsXmr:
   image: ghcr.io/xibosignage/xibo-xmr:0.11
@@ -36,3 +38,12 @@ cmsMemcached:
 cmsQuickchart:
   image: ianw/quickchart
   port: 3400
+
+ingress:
+  enabled: true
+  hostname: cms.example.com
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  tls:
+    enabled: true
+    secretName: cms-tls
