@@ -20,7 +20,7 @@ spec:
             - name: MYSQL_HOST
               value: cms-db
             - name: CMS_USE_MEMCACHED
-              value: false
+              value: "false"
             - name: MYSQL_PASSWORD
               value: {{ .Values.cmsDb.password }}
             - name: CMS_SERVER_NAME
