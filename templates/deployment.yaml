@@ -1,6 +1,43 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: cms-web
+spec:
+  serviceName: cms-web
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-web
+  template:
+    metadata:
+      labels:
+        app: cms-web
+    spec:
+      containers:
+        - name: mysql
+          image: ghcr.io/xibosignage/xibo-cms:release-4.1.2
+          envFrom:
+            - configMapRef:
+                name: cms-config
+          volumeMounts:
+            - name: cms-data
+              mountPath: /var/www
+  volumeClaimTemplates:
+    - metadata:
+        name: cms-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: longhorn
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
   name: cms-db
 spec:
   serviceName: cms-db
@@ -15,19 +52,12 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: {{ .Values.cmsDb.image }}
-          env:
-            {{- with .Values.cmsDb.env }}
-            {{- range $key, $value := . }}
-            - name: {{ $key }}
-              value: "{{ $value }}"
-            {{- end }}
-            {{- end }}
-          resources:
-            limits:
-              memory: {{ .Values.cmsDb.memLimit }}
+          image: mysql:8.0
+          envFrom:
+            - configMapRef:
+                name: cms-config
           volumeMounts:
-            - name: mysql-data
+            - name: cms-data
               mountPath: /var/lib/mysql
   volumeClaimTemplates:
     - metadata:
@@ -39,46 +69,3 @@ spec:
           requests:
             storage: 10Gi
         storageClassName: longhorn
-
-
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: cms-web
-spec:
-  serviceName: cms-web
-  replicas: 1
-  selector:
-    matchLabels:
-      app: cms-web
-  template:
-    metadata:
-      labels:
-        app: cms-web
-    spec:
-      containers:
-        - name: cms-web
-          image: {{ .Values.cmsWeb.image }}
-          ports:
-            - containerPort: {{ .Values.cmsWeb.port }}
-          volumeMounts:
-            - name: cms-data
-              mountPath: /var/www/cms
-          envFrom:
-            - configMapRef:
-                name: cms-config
-          resources:
-            limits:
-              memory: {{ .Values.cmsWeb.memLimit }}
-  volumeClaimTemplates:
-    - metadata:
-        name: cms-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
-        storageClassName: longhorn
-

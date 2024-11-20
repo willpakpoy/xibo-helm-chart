@@ -4,14 +4,10 @@ metadata:
   name: cms-config
 data:
   config.env: |
+    MYSQL_PASSWORD={{ .Values.cmsDb.password }}
+    CMS_SERVER_NAME={{ .Values.ingressHost }}
+    CMS_USE_MEMCACHED=false
     MYSQL_HOST=cms-db
-    MYSQL_PORT=3306
-    MYSQL_PASSWORD={{ .Values.common.mysqlPassword }}
-    CMS_SMTP_SERVER={{ .Values.common.smtp.server }}
-    CMS_SMTP_USERNAME={{ .Values.common.smtp.username }}
-    CMS_SMTP_PASSWORD={{ .Values.common.smtp.password }}
-    CMS_SMTP_USE_TLS={{ .Values.common.smtp.useTLS }}
-    CMS_SMTP_USE_STARTTLS={{ .Values.common.smtp.useStartTLS }}
-    CMS_SMTP_REWRITE_DOMAIN={{ .Values.common.smtp.rewriteDomain }}
-    CMS_SMTP_HOSTNAME={{ .Values.common.smtp.hostname }}
-    CMS_SMTP_FROM_LINE_OVERRIDE={{ .Values.common.smtp.fromLineOverride }}
+    MYSQL_DATABASE=cms
+    MYSQL_USER=cms
+    MYSQL_RANDOM_ROOT_PASSWORD=yes

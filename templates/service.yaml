@@ -5,23 +5,10 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: {{ .Values.cmsWeb.port }}
-      targetPort: {{ .Values.cmsWeb.port }}
+    - port: 80
+      targetPort: 80
   selector:
     app: cms-web
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: cms-xmr
-spec:
-  type: ClusterIP
-  ports:
-    - port: {{ .Values.cmsXmr.port }}
-      targetPort: {{ .Values.cmsXmr.port }}
-  selector:
-    app: cms-xmr
 ---
 apiVersion: v1
 kind: Service
