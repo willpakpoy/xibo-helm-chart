@@ -21,3 +21,16 @@ spec:
       targetPort: 3306
   selector:
     app: cms-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cms-xmr
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9505
+      targetPort: 9505
+  selector:
+    app: cms-xmr
+

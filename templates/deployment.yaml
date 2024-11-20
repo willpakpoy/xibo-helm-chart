@@ -25,6 +25,8 @@ spec:
               value: {{ .Values.cmsDb.password }}
             - name: CMS_SERVER_NAME
               value: {{ .Values.ingressHost }}
+            - name: XMR_HOST
+              value: cms-xmr
           volumeMounts:
             - name: cms-data
               mountPath: /var/www
@@ -83,3 +85,24 @@ spec:
           requests:
             storage: 10Gi
         storageClassName: longhorn
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cms-xmr
+spec:
+  serviceName: cms-xmr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-xmr
+  template:
+    metadata:
+      labels:
+        app: cms-xmr
+    spec:
+      containers:
+        - name: xmr
+          image: ghcr.io/xibosignage/xibo-xmr:0.11
