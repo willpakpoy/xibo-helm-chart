@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert
+spec:
+  commonName: {{ .Values.ingressHost }}
+  secretName: cert
+  dnsNames:
+    - {{ .Values.ingressHost }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-production
