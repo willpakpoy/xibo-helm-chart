@@ -4,6 +4,8 @@ metadata:
   name: cms-config
 data:
   config.env: |
+    MYSQL_HOST=cms-db
+    MYSQL_PORT=3306
     MYSQL_PASSWORD={{ .Values.common.mysqlPassword }}
     CMS_SMTP_SERVER={{ .Values.common.smtp.server }}
     CMS_SMTP_USERNAME={{ .Values.common.smtp.username }}

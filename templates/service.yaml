@@ -22,3 +22,15 @@ spec:
       targetPort: {{ .Values.cmsXmr.port }}
   selector:
     app: cms-xmr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cms-db
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: cms-db
