@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: cms-db
 spec:
+  serviceName: cms-db
   replicas: 1
   selector:
     matchLabels:
@@ -28,17 +29,25 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: cms-db-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: longhorn
+
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: cms-web
 spec:
+  serviceName: cms-web
   replicas: 1
   selector:
     matchLabels:
@@ -62,7 +71,14 @@ spec:
           resources:
             limits:
               memory: {{ .Values.cmsWeb.memLimit }}
-      volumes:
-        - name: cms-data
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-cms
+  volumeClaimTemplates:
+    - metadata:
+        name: cms-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: longhorn
+
