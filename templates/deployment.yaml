@@ -28,17 +28,17 @@ spec:
             - name: XMR_HOST
               value: cms-xmr
           volumeMounts:
-            - name: cms-data
-              mountPath: /var/www
+            - name: cms-library
+              mountPath: /var/www/cms/library
   volumeClaimTemplates:
     - metadata:
-        name: cms-data
+        name: cms-library
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: 5Gi
         storageClassName: longhorn
 
 ---
